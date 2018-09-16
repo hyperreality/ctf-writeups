@@ -33,10 +33,10 @@ Looking closer at the base64-encoded and decoded data, there were interesting pa
 
 Crypto-expert [holocircuit](https://github.com/holocircuit) made a breakthrough, noting that the first move corresponds to meaningful text in the centre, with roughly equal amounts of garbage on either side. Like how a chessboard is setup at the beginning of game, with empty space in the middle and all the pieces at the top or the bottom. Could the empty spaces on the chessboard at any given point in the game indicate letters to select in the relevant 8x8 grid of base64 characters?
 
-The Python2 program `mcgriddle.py` implements this, playing through the game move-by-move with [python-chess](https://github.com/niklasf/python-chess), using its board representation to index the base64 strings. Most difficult to get right was handling of uneven or unaligned base64 characters, so we front-pad the data until it prints out as ASCII.
+[mcgriddle.py](mcgriddle.py) implements this, playing through the game move-by-move with [python-chess](https://github.com/niklasf/python-chess), using its board representation to index the base64 strings. Most difficult to get right was handling of uneven or unaligned base64 characters, so we front-pad the data until it prints out as ASCII.
 
 ![](mcgriddle_decoded.png)
 
 This revealed a whole lot more Latin and more of the flag, and we felt we were seconds away from scoring 300pts. However, we couldn't find the remaining part of the flag. We wasted a lot of time fruitlessly trying to figure out what we had missed, tweaking the code and riffling through the PCAP seeking extra clues. Eventually we got tired, and gave up.
 
-Unfortunately it turned out that earlier versions of the PCAP file actually contained the full flag, but the 'final.pcap' that most teams had downloaded was broken. That's extremely lame, but par on course for this CTF, in which every forensics challenge was terrible and certainly not the quality we expected from CSAW.
+Unfortunately it turned out that earlier versions of the PCAP file actually contained the full flag, but the 'final.pcap' that most teams had downloaded was broken. That's extremely lame, but par on course for this CTF, in which none of the forensics challenges were of the quality we expected from CSAW.
