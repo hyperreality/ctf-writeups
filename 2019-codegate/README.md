@@ -89,7 +89,7 @@ We spent a while browsing the website and attempting various attack vectors, par
 
 ### Cracking the zip
 
-It suddenly occurred to us that the zipfile might be vulnerable to a [known plaintext attack](https://www.elcomsoft.com/help/en/archpr/known_plaintext_attack_(zip).html):
+It suddenly occurred to us that the zipfile might be vulnerable to a [known plaintext attack](https://www.elcomsoft.com/help/en/archpr/known_plaintext_attack_(zip).html).
 
 Indeed, the file used the old, weak ZipCrypto algorithm rather than AES:
 
@@ -100,14 +100,14 @@ Method = ZipCrypto Deflate
 ...
 ```
 
-The attack's speed depends on the size of the known plaintext, so it was good that there was a 450kB JS file inside. However, running [pkcrack](https://www.unix-ag.uni-kl.de/~conrad/krypto/pkcrack.html) with the correct parameters returned the following error:
+The attack's speed depends on the size of the known plaintext, so it was good that there were several large files inside. However, running [pkcrack](https://www.unix-ag.uni-kl.de/~conrad/krypto/pkcrack.html) with correct parameters returned the following error:
 
 ```
 Read unknown signature: 0xfd054e2f
 Error: unknown signature (ZIP file may be corrupt)
 ```
 
-Not to worry, another program [bkcrack](https://github.com/kimci86/bkcrack) knew how to crack the file (even though it was a nightmare to build) and we got the archive password: `D0_N0T_RE1E@5E_0THER5`.
+Not to worry, another program [bkcrack](https://github.com/kimci86/bkcrack) knew how to crack the file and we got the archive password: `D0_N0T_RE1E@5E_0THER5`.
 
 ### Reviewing the code
 
@@ -124,7 +124,7 @@ Initially we assumed we would be able to find a SQL injection, or predict/manipu
 
 ### Becoming crypto-millionaires
 
-In fact, we soon figured out that the reserv.php file offered a clear route to updating our wallet in the database. This file had a check:
+In fact, we soon figured out that the reserv.php file potentially offered the path to riches. This file had a check:
 
 ```php
 $time = strtotime($_POST['date']);
@@ -136,9 +136,28 @@ if($time < time() || $time > time()+60*60*24*365*20)
 
 It seemed difficult to bypass; whatever date format or time we used, we got "detect input error".
 
-Eventually we guessed that the time on the backend must be set incorrectly, and by fuzzing the field, found that 2020/01/01 got us through. This was strange because other parts of the source code and even the flag itself pointed towards it being 9999/09/09...
+Eventually we guessed that the current time on the backend server may have been set incorrectly, and by fuzzing the field, found that 2020/01/01 got us through. Pretty bad for a financial website, but it's cryptocurrency so YOLO...
 
-The following request was sufficient to grant us a huge quantity of scamcoins:
+Digging more deeply into the code, reserv.php allowed a user to make a forward contract, which would get executed at the market rate when the market.php page was visited at that time. However there is an error in the following code:
+
+```php
+### if reserv is exists
+$q = "SELECT * FROM coin_price where Date like '%{$row['reserv']}%' order by Date limit 1";
+$res = mysqli_query($conn,$q);
+$row2 = mysqli_fetch_assoc($res);
+if($row['cash'] < $row2['price']*$row['amount'])
+    echo "Not enough cash to buy SCAM coin. your reservation is failed..</br>"; 
+else
+{
+    $cash = $row['cash'] - ($row2['price'] * $row['amount']);
+    $coin = $row['coin'] + $row['amount'];
+    $q = "UPDATE user_wallet set amount=0, reserv='9999-12-30',cash='{$cash}', coin='{$coin}' where id='{$_SESSION['ID']}'";
+...
+```
+
+Regardless of whether a coin price has been pulled from the database, $amount of $coin are added. So after making a forward contract, we immediately visit market.php and receive our scamcoins.
+
+Therefore, the following request was sufficient to grant us a huge quantity of scamcoins:
 
 ```bash
 curl -s -X POST 'http://110.10.147.112/?p=reserv' -H 'Host: 110.10.147.112' -H 'Cookie: PHPSESSID=xxxxxxxxxxxxxxxxxxxxxxxxxx' -F 'code=D0_N0T_RE1E@5E_0THER5' -F "date=2020/01/01" -F 'amount=100000000'
@@ -149,3 +168,5 @@ curl -s -X POST 'http://110.10.147.112/?p=reserv' -H 'Host: 110.10.147.112' -H '
 We used these to buy gold on the exchange, which was more difficult than first anticipated, because if you bought too many a wraparound would occur and your balance would go back to zero.
 
 The gold was then used to purchase the "GOOD THINGS"/the flag, which contained an obscure joke about [HODLING](https://en.wikipedia.org/wiki/Hodl) cryptocurrency.
+
+We are not sure whether any of part of this writeup was the intended solution. We never took advantage of a SQL injection in the AccountNumber field, or the BBS, and the weak encryption on the zipfile may have been a mistake, but it was still a fun challenge and we appreciate the jokes and the fact that the source code was shared.
