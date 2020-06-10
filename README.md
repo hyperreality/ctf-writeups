@@ -25,6 +25,8 @@ Notes from my participation in security CTFs, mostly for personal reference.
  - [Sectalks LON0x23 - Tesseract OCR](https://github.com/sectalks/sectalks/tree/master/ctf-solutions/LON0x23/hyperreality)
  - [Sectalks LON0x24 - Zeppelin](https://github.com/sectalks/sectalks/tree/master/ctf-solutions/LON0x24/hyperreality)
  - [Sectalks LON0x25 - MAC](https://github.com/sectalks/sectalks/tree/master/ctf-solutions/LON0x25/hyperreality)
+ - [Sectalks LON0x27 - Neuromancer CTF](https://github.com/sectalks/sectalks/tree/master/ctf-solutions/LON0x27)
+ - [Sectalks LON0x2A - bc](https://github.com/sectalks/sectalks/tree/master/ctf-solutions/LON0x2A)
 
 ### CTFs I've written:
  - [Anonymity](https://codewordsolver.com/anonymity/) [(source/solutions)](https://github.com/sectalks/sectalks/tree/master/ctfs/LON0x0e)
