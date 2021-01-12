@@ -5,6 +5,10 @@ Notes from my participation in security CTFs, mostly for personal reference.
 
 ### Writeups hosted elsewhere
 
+#### blog.cryptohack.org
+ - [Real World CTF - Cracking a Chinese Proxy Tunnel](https://blog.cryptohack.org/cracking-chinese-proxy-realworldctf)
+ - [Ledger Donjon CTF - Modern Supercomputer](https://blog.cryptohack.org/hacking-eos-ledger-donjon-ctf-writeup)
+
 #### cr0wn
  - [VincCTF](https://cr0wn.uk/2019/vincctf/)
  - [Chaos Communication Camp 2019](https://cr0wn.uk/2019/chaos-communication-camp-2019/)
